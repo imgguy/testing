@@ -10,6 +10,8 @@ jobs:
      contents: write
 
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4.2.2
     - name: Download
       run: Invoke-WebRequest https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe -OutFile cloudflared.exe
     
@@ -20,8 +22,7 @@ jobs:
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "Maxedpowers123456@123/" -Force)
 
 
-    - name: Checkout
-      uses: actions/checkout@v4.2.2
+
     
          
     - name: cloudflared-Without Login
