@@ -1,0 +1,19 @@
+name: Pleasework
+
+on: 
+  workflow_dispatch:
+
+  
+jobs:
+  build:
+    runs-on: Windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Initializing Setup
+      run: ./setup.ps1
+    - name: Starting CRD
+      run: |
+       & "${Env:PROGRAMFILES(X86)}\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe" --code="4/0AUJR-x7LLDSQ_e6Qjc1nYdbTqVYQilkwL210odZB9RsGT0mkHB5bDtm6IGtCNk4gJ5DviA" -pin=123456 --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=$Env:COMPUTERNAME
+    - name: Keep Alive
+      run: ./timeout.ps1
