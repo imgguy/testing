@@ -20,7 +20,8 @@ jobs:
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "Maxedpowers123456@123/" -Force)
 
 
-
+    - name: Checkout
+      uses: actions/checkout@v4.2.2
     
          
     - name: cloudflared-Without Login
