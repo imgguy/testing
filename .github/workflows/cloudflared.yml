@@ -28,12 +28,8 @@ jobs:
     - name: cloudflared-Without Login
       run: Start-Process -FilePath ".\cloudflared.exe" -ArgumentList "--url rdp://localhost:3389" -RedirectStandardError "C:\cloudflared.txt"
     - run: Start-Sleep -s 10 
-    - run: |
-       git config --global user.name "github-actions[bot]"
-       git config --global user.email "github-actions[bot]@users.noreply.github.com"
-       git add cloudflared.txt
-       git commit -m "Add cloudflared.txt "
-       git push
+    - name: poof
+      run: Get-Content C:\cloudflared.txt
     - run: Start-Sleep -s 21600
     
 
