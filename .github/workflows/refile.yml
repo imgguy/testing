@@ -1,11 +1,11 @@
-name: Download GoFile Every 21 Hours
+name: important drive reup
 
 on:
   workflow_dispatch:
    
   
   schedule:
-    - cron: "0 */21 * * *"
+    - cron: "0 */22 * * *"
 
 permissions:
   contents: write
@@ -29,7 +29,7 @@ jobs:
         run: |
          cat /dev/urandom | tr -dc 'a-zA-Z0-9!@#$%^&*()_+{}|:<>?' | head -c 1000 > ./woke/k.txt
          pip install -r requirements.txt
-         python3 ./gofile-downloader.py https://gofile.io/d/ifad83
+         python3 ./gofile-downloader.py ${{ secrets.KEY }}
       - name: Save to GitHub
         if: always()
         run: |
