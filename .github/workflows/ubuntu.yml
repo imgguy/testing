@@ -22,6 +22,8 @@ jobs:
         sudo dpkg --add-architecture amd64
         sudo apt update
         sudo apt install libc6:amd64
+        sudo apt-get install xserver-xorg-video-dummy pkexec policykit-1 xbase-clients python3-psutil python3-xdg gsettings-desktop-schemas
+
     - name: Creating New User
       run: |
         user=marc
