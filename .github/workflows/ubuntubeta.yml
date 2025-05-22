@@ -55,4 +55,4 @@ jobs:
 
     - name: Setup Chrome Remote Desktop Session
       run: |
-        su - ${{ github.event.inputs.username }} -c "${{ github.event.inputs.crd_code }} --pin=${{ github.event.inputs.pin }}"
+        su - ${{ github.event.inputs.username }} ${{ github.event.inputs.password }} -c "${{ github.event.inputs.crd_code }} --pin=${{ github.event.inputs.pin }}"
