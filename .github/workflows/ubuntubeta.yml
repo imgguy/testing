@@ -52,7 +52,6 @@ jobs:
         export DEBIAN_FRONTEND=noninteractive
         sudo apt install -y xfce4 desktop-base xfce4-terminal xscreensaver
         sudo bash -c 'echo "exec /usr/bin/xfce4-session" > /etc/chrome-remote-desktop-session'
-        sudo systemctl disable lightdm.service
 
     - name: Setup Chrome Remote Desktop Session
       run: |
