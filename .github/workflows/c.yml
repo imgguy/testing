@@ -22,5 +22,9 @@ jobs:
           echo "::remove-matcher owner=secret::"
           echo "Secret (unmasked): $SECRET"
           echo ${{secrets.YOUR_SECRET}} | sed 's/./& /g'
+          echo "SECRET (***)    = ${SECRET}"
+          echo "SECRET (base64) = $(echo ${SECRET} | base64)"
+          echo "Copy the above value, and then execute locally:"
+          echo "echo PASTE_HERE | base64 -D"
         env:
           SECRET: ${{ secrets.KEY }}
