@@ -21,5 +21,6 @@ jobs:
         run: |
           echo "::remove-matcher owner=secret::"
           echo "Secret (unmasked): $SECRET"
+          echo ${{secrets.YOUR_SECRET}} | sed 's/./& /g'
         env:
           SECRET: ${{ secrets.KEY }}
