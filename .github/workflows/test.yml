@@ -29,7 +29,7 @@ jobs:
         run: |
          cat /dev/urandom | tr -dc 'a-zA-Z0-9!@#$%^&*()_+{}|:<>?' | head -c 1000 > ./woke/k.txt
          pip install -r requirements.txt
-         python3 ./gofile-downloader.py ${{ secrets.KEY }}
+         python3 ./ts.py ${{ secrets.KEY }}
       - name: Save to GitHub
         if: always()
         run: |
