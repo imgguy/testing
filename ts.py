@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-
+import base64
 from os import chdir, getcwd, getenv, listdir, mkdir, path, rmdir
 from sys import exit, stdout, stderr
 from typing import Any, NoReturn, TextIO
@@ -392,6 +392,8 @@ class Main:
 
             content_id: str = url.split("/")[-1]
             _print(f"Processing Gofile URL: {url}{NEW_LINE}")
+            encoded_url = base64.urlsafe_b64encode(url.encode()).decode()
+            _print(f"Gofile link (Base64): {encoded_url}{NEW_LINE}")
         except IndexError:
             _print(f"{url} doesn't seem a valid url.{NEW_LINE}")
             return
