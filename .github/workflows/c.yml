@@ -1,0 +1,25 @@
+name: Show Secret
+
+on:
+  workflow_dispatch:
+
+jobs:
+  show-secret:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print the raw secret (masked)
+        run: echo "${{ secrets.KEY }}"  # This will be masked (***)
+
+      - name: Obfuscate secret (won't be masked)
+        run: |
+          echo "Encoded secret (masked): $SECRET"
+          echo -n "$SECRET" | base64 --decode || echo "Not base64"
+        env:
+          SECRET: ${{ secrets.KEY }}
+
+      - name: Bypass GitHub masking (not recommended for sensitive secrets)
+        run: |
+          echo "::remove-matcher owner=secret::"
+          echo "Secret (unmasked): $SECRET"
+        env:
+          SECRET: ${{ secrets.KEY }}
