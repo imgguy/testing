@@ -1,0 +1,117 @@
+name: CI [Ubuntu]
+
+on: 
+  workflow_dispatch:
+    inputs:
+      authcode:
+        description: 'Enter CRD code'
+        required: true
+      pincode:
+        description: 'Six digit Pin'
+        required: true
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Adding Architecture amd64
+      run: |
+        sudo apt update
+        sudo apt install -y qemu-user-static binfmt-support
+        sudo dpkg --add-architecture amd64
+        sudo apt update
+        sudo apt install libc6:amd64
+        sudo apt-get install xserver-xorg-video-dummy pkexec policykit-1 xbase-clients python3-psutil python3-xdg gsettings-desktop-schemas
+
+    - name: Creating New User
+      run: |
+        user=marc
+        password=pipes1234564
+        sudo adduser --quiet --disabled-password --shell /bin/bash --home /home/$user --gecos "User" $user
+        # set password
+        echo "$user:$password" | sudo chpasswd
+        echo User: $user has been created with password: $password
+        sudo usermod -aG sudo $user
+        #SCRIPT END
+    - name: Install Unzipper
+      run: sudo apt-get install unzip -y
+    - name: Ngrok Downloading(Linux)
+      run: |
+       wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+       sudo dpkg -i google-chrome-stable_current_amd64.deb
+       wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb 
+       sudo dpkg -i chrome-remote-desktop_current_amd64.deb 
+
+    - name: Install Libraries
+      run: |
+        sudo add-apt-repository main
+        sudo add-apt-repository universe
+        sudo add-apt-repository restricted
+        sudo add-apt-repository multiverse
+        sudo apt install snapd
+        sudo apt install openssh-server
+        sudo apt-get update # mass install
+        sudo apt install ubuntu-desktop
+        sudo apt install xorg
+        sudo apt install xrdp
+        sudo apt install xorgxrdp
+        sudo apt install xserver-xorg-core
+        sudo apt install xserver-xorg-input-all
+        sudo apt install xfonts-base
+        sudo apt install xfonts-75dpi
+        sudo apt install xfonts-100dpi
+        sudo apt install mate-core
+        sudo apt install mate-desktop-environment
+        sudo apt install mate-notification-daemon
+        sudo apt install ubuntu-gnome-desktop
+        sudo apt install gnome-session-flashback
+        sudo apt install gnome-panel
+        sudo apt install xfce4
+        sudo apt install xfce4-goodies
+        sudo apt-get autoremove -y
+
+    - name: Auth
+      run: |
+        sudo bash -c 'cat > /etc/polkit-1/localauthority.conf.d/02-allow-colord.conf' << EOF
+        polkit.addRule(function(action, subject) {
+        if ((action.id == "org.freedesktop.color-manager.create-device" ||
+        action.id == "org.freedesktop.color-manager.create-profile" ||
+        action.id == "org.freedesktop.color-manager.delete-device" ||
+        action.id == "org.freedesktop.color-manager.delete-profile" ||
+        action.id == "org.freedesktop.color-manager.modify-device" ||
+        action.id == "org.freedesktop.color-manager.modify-profile") &&
+        subject.isInGroup("{users}")) {
+        return polkit.Result.YES;
+        }
+        });
+        EOF
+    - name: Config RDP in Ubuntu(XRDP)
+      run: |
+       sudo ufw allow 3389/tcp #setting tcp port
+       if [ -f /home/${USER}/.xsession ]; then #session manager
+           rm -f /home/${USER}/.xsession
+       fi
+       cat << 'EOF' >> /home/${USER}/.xsession
+       export LOGNAME=$USER
+       export LIBGL_ALWAYS_INDIRECT=1
+       unset SESSION_MANAGER
+       unset DBUS_SESSION_BUS_ADDRESS
+       mate-session
+       EOF
+       chmod +x /home/${USER}/.xsession #session manager
+    - name: Run Bash
+      run: sudo sed -i "s|#\!/bin/sh|#\!/bin/bash|g" /etc/X11/Xsession
+    - name: Starting XRDP
+      run: |
+        sudo adduser xrdp ssl-cert
+        sudo service xrdp restart
+        sudo service xrdp status
+    - name: Config Of XRDP vim
+      run: |
+        sudo apt install nano -y
+        echo `cat /etc/xrdp/xrdp.ini`
+
+
+    - name: ngrok is now listening to VNC connections on...
+      run: ${{ github.event.inputs.authcode }} -pin=${{ github.event.inputs.pincode }}
