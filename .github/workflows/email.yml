@@ -4,30 +4,35 @@ on:
   workflow_dispatch:
     inputs:
       authcode:
-        default: false
+        description: "Enable auth mode"
         type: boolean
         required: true
-  
+        default: false
+
 jobs:
   build:
-    runs-on: Windows-latest
+    runs-on: windows-latest
 
     steps:
-    - name: chekm8
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
       with:
         path: woke
-    - name: Initializing Setup
-      if: ${{ inputs.authcode }}
-      run: p.py --continue
-    - name: Initializing Setup
-      run: p.py --check
+
+    - name: Initializing Setup with --continue
+      if: ${{ inputs.authcode == true }}
+      run: python p.py --continue
+
+    - name: Initializing Setup with --check
+      if: ${{ inputs.authcode == false }}
+      run: python p.py --check
+
     - name: Save to GitHub
       if: always()
       run: |
-          git pull
-          git config user.name github-actions
-          git config user.email actions@github.com
-          git add ./woke
-          git commit -m "publish mails"
-          git push
+        git pull
+        git config user.name github-actions
+        git config user.email actions@github.com
+        git add ./woke
+        git commit -m "publish mails"
+        git push
