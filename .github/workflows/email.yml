@@ -1,16 +1,3 @@
-name: Mail
-
-on: 
-  workflow_dispatch:
-    inputs:
-      authcode:
-        description: "Resume?"
-        type: boolean
-        required: true
-        default: false
-permissions:
-  contents: write
-
 jobs:
   build:
     runs-on: windows-latest
@@ -21,18 +8,17 @@ jobs:
       with:
         path: woke
 
-    - name: recheck
-      uses: actions/checkout@v4
-    - name: install
-      run: pip install tqdm requests termcolor  
-
-    - name: Initializing Setup with --continue
+    - name: Run p.py with timeout (authcode = true)
       if: ${{ inputs.authcode == true }}
-      run: python p.py --continue
+      shell: bash
+      run: |
+        timeout 18000s python p.py --continue || echo "Process killed after 5 hours"
 
-    - name: Initializing Setup with --check
+    - name: Run p.py with timeout (authcode = false)
       if: ${{ inputs.authcode == false }}
-      run: python p.py --check
+      shell: bash
+      run: |
+        timeout 18000s python p.py --check || echo "Process killed after 5 hours"
 
     - name: Save to GitHub
       if: always()
@@ -41,5 +27,5 @@ jobs:
         git config user.name github-actions
         git config user.email actions@github.com
         git add .
-        git commit -m "publish mails"
+        git commit -m "publish mails" || echo "Nothing to commit"
         git push
