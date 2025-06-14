@@ -8,6 +8,8 @@ on:
         type: boolean
         required: true
         default: false
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -21,6 +23,8 @@ jobs:
 
     - name: recheck
       uses: actions/checkout@v4
+    - name: install
+      run: pip install tqdm requests termcolor  
 
     - name: Initializing Setup with --continue
       if: ${{ inputs.authcode == true }}
