@@ -1,3 +1,14 @@
+name: Mail
+
+on: 
+  workflow_dispatch:
+    inputs:
+      authcode:
+        description: "Enable auth mode"
+        type: boolean
+        required: true
+        default: false
+
 jobs:
   build:
     runs-on: windows-latest
@@ -8,13 +19,13 @@ jobs:
       with:
         path: woke
 
-    - name: Run p.py with timeout (authcode = true)
+    - name: Run p.py with --continue (authcode = true)
       if: ${{ inputs.authcode == true }}
       shell: bash
       run: |
         timeout 18000s python p.py --continue || echo "Process killed after 5 hours"
 
-    - name: Run p.py with timeout (authcode = false)
+    - name: Run p.py with --check (authcode = false)
       if: ${{ inputs.authcode == false }}
       shell: bash
       run: |
@@ -22,6 +33,7 @@ jobs:
 
     - name: Save to GitHub
       if: always()
+      shell: bash
       run: |
         git pull
         git config user.name github-actions
