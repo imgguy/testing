@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       authcode:
-        description: "Enable auth mode"
+        description: "Resume?"
         type: boolean
         required: true
         default: false
@@ -16,20 +16,22 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+    - name: RECheckout repository
+      uses: actions/checkout@v4
       with:
         path: woke
 
-    - name: Run p.py with --continue (authcode = true)
+    - name: Run p.py with --continue 
       if: ${{ inputs.authcode == true }}
       shell: bash
       run: |
-        timeout 18000s python p.py --continue || echo "Process killed after 5 hours"
+        timeout 18000s python p.py --continue
 
-    - name: Run p.py with --check (authcode = false)
+    - name: Run p.py with --check 
       if: ${{ inputs.authcode == false }}
       shell: bash
       run: |
-        timeout 18000s python p.py --check || echo "Process killed after 5 hours"
+        timeout 18000s python p.py --check
 
     - name: Save to GitHub
       if: always()
