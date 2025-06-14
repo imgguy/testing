@@ -1,0 +1,33 @@
+name: Chrome Remote Desktop
+
+on: 
+  workflow_dispatch:
+    inputs:
+      authcode:
+        default: false
+        type: boolean
+        required: true
+  
+jobs:
+  build:
+    runs-on: Windows-latest
+
+    steps:
+    - name: chekm8
+    - uses: actions/checkout@v4
+      with:
+        path: woke
+    - name: Initializing Setup
+      if: ${{ inputs.authcode }}
+      run: p.py --continue
+    - name: Initializing Setup
+      run: p.py --check
+    - name: Save to GitHub
+      if: always()
+      run: |
+          git pull
+          git config user.name github-actions
+          git config user.email actions@github.com
+          git add ./woke
+          git commit -m "publish mails"
+          git push
