@@ -1,4 +1,4 @@
-name: Chrome Remote Desktop
+name: Mail
 
 on: 
   workflow_dispatch:
