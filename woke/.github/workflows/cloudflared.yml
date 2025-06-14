@@ -1,0 +1,35 @@
+name: cloudflared
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+    permissions:
+     contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.2.2
+    - name: Download
+      run: Invoke-WebRequest https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe -OutFile cloudflared.exe
+    
+    - name: Enable TS
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+    - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+    - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+    - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "Maxedpowers123456@123/" -Force)
+
+
+
+    
+         
+    - name: cloudflared-Without Login
+      run: Start-Process -FilePath ".\cloudflared.exe" -ArgumentList "--url rdp://localhost:3389" -RedirectStandardError "C:\cloudflared.txt"
+    - run: Start-Sleep -s 10 
+    - name: poof
+      run: Get-Content C:\cloudflared.txt
+    - run: Start-Sleep -s 21600
+    
+
