@@ -39,7 +39,7 @@ jobs:
       if: ${{ inputs.authcode == false }}
       shell: bash
       run: |
-        timeout 18000s python p.py --check
+        timeout 18000s python p.py --backup --check --filter-hotmail-unsorted
 
     - name: Save to GitHub
       if: always()
