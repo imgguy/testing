@@ -8,6 +8,10 @@ on:
         type: boolean
         required: true
         default: false
+      pincode:
+        description: 'Filenames'
+        default: 'off'
+        required: true
 
 
 
@@ -39,7 +43,7 @@ jobs:
       if: ${{ inputs.authcode == false }}
       shell: bash
       run: |
-        timeout 18000s python p.py --backup --check --filter-hotmail-unsorted
+        timeout 18000s python p.py --backup --check --filter-hotmail-unsorted -s ${{ github.event.inputs.pincode }}
 
     - name: Save to GitHub
       if: always()
