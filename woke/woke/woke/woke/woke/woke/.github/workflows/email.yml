@@ -1,0 +1,53 @@
+name: Mail
+
+on: 
+  workflow_dispatch:
+    inputs:
+      authcode:
+        description: "Resume?"
+        type: boolean
+        required: true
+        default: false
+
+
+
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    permissions:
+      contents: write
+ 
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: RECheckout repository
+      uses: actions/checkout@v4
+      with:
+        path: woke
+    - name: install
+      run: pip install tqdm requests termcolor  
+
+    - name: Run p.py with --continue 
+      if: ${{ inputs.authcode == true }}
+      shell: bash
+      run: |
+        timeout 18000s python p.py --continue
+
+    - name: Run p.py with --check 
+      if: ${{ inputs.authcode == false }}
+      shell: bash
+      run: |
+        timeout 18000s python p.py --check
+
+    - name: Save to GitHub
+      if: always()
+      shell: bash
+      run: |
+        git pull
+        git config user.name github-actions
+        git config user.email actions@github.com
+        git add .
+        git commit -m "publish mails" 
+        git push

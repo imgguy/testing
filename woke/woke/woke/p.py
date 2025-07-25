@@ -35,17 +35,30 @@ parser.add_argument("--check", action="store_true", help="Start checking emails"
 parser.add_argument("--continue", dest="continue_check", action="store_true", help="Continue from last progress")
 parser.add_argument("--threads", type=int, help="Set thread count (1-100)")
 parser.add_argument("--backup", action="store_true", help="Backup and clear output files before running")
+parser.add_argument("-s", "--suffix", type=str, help="Suffix to append to output filenames (use 'off' to disable)")
 
 args = parser.parse_args()
 
 if args.backup:
     backup_and_clear()
 
-# === SET TITLE & DEFINE FILES ===
+# === APPLY SUFFIX TO OUTPUT FILE NAMES ===
+suffix_part = "" if (args.suffix is None or args.suffix.strip().lower() == "off") else args.suffix.strip()
+
+def suffix_filename(base):
+    if suffix_part:
+        return f"{base[:-4]}{suffix_part}.txt"
+    return base
+
+available_path = suffix_filename("availableHotmail.txt")
+not_available_path = suffix_filename("notAvailableHotmail.txt")
+checked_file_path = suffix_filename("checked_emails.txt")
+
+# === SET TITLE & FILE HANDLERS ===
 os.system('title Hotmail Checker @imgguy')
 
-available = open('availableHotmail.txt', 'a+', encoding='utf-8')
-notAvailable = open('notAvailableHotmail.txt', 'a+', encoding='utf-8')
+available = open(available_path, 'a+', encoding='utf-8')
+notAvailable = open(not_available_path, 'a+', encoding='utf-8')
 
 THREAD_COUNT = 30
 if args.threads:
@@ -54,8 +67,6 @@ if args.threads:
     else:
         print(colored("Thread count must be between 1 and 100.", 'red'))
         exit(1)
-
-checked_file_path = 'checked_emails.txt'
 
 stats = {
     "available": 0,
